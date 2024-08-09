@@ -1,22 +1,25 @@
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove
 from aiogram.utils.keyboard import ReplyKeyboardBuilder
 
-start_kb = ReplyKeyboardMarkup(
-    keyboard=[
-        [
-            KeyboardButton(text='Меню'),
-        ],
-    ],
-    resize_keyboard=True,
-    input_field_placeholder='Что вас интересует?'
-)
+def get_keyboard(
+        *btns: str,
+        placeholder: str = None,
+        request_contact: int = None,
+        request_location: int = None,
+        sizes: tuple[int] = (2,),
+):
+    keyboard = ReplyKeyboardBuilder()
 
-del_kbd = ReplyKeyboardRemove()
+    for index, text in enumerate(btns, start=0):
 
-start_kb2 = ReplyKeyboardBuilder()
-start_kb2.add(KeyboardButton(text='Меню'))
-start_kb2.adjust(1, 1)
+        if request_contact and request_contact == index:
+           keyboard.add(KeyboardButton(text=text, request_contact=True))
 
-start_kb3 = ReplyKeyboardBuilder()
-start_kb3.attach((start_kb2))
-start_kb3.row(KeyboardButton(text="Оставить отзыв"))
+        elif request_location and request_location == index:
+            keyboard.add(KeyboardButton(text=text, request_location=True))
+        else:
+            keyboard.add(KeyboardButton(text=text))
+
+    return keyboard.adjust(*sizes).as_markup(
+        resize_keyboard=True, input_field_placeholder=placeholder
+    )
