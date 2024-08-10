@@ -1,6 +1,7 @@
 from aiogram import types, Router, F
 from aiogram.filters import CommandStart, Command, or_f
 
+from database.orm_query import orm_get_products
 from filters.chat_types import ChatTypeFilter
 from kbrd import reply
 
@@ -22,7 +23,13 @@ async def start_cmd(message: types.Message):
     )
 
 @user_private_router.message(or_f(Command("menu"), (F.text.lower() == "меню")))
-async def menu_cmd(message: types.Message):
+async def menu_cmd(message: types.Message, session):
+    for product in await orm_get_products(session):
+        await message.answer_photo(
+            product.image,
+            caption=f"{product.name}\
+                    \n{product.description}\nСтоимость: {round(product.price, 2)}"
+        )
     await message.answer('Вот меню:')
 
 @user_private_router.message(F.text.lower() == 'магия')
