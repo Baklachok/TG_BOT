@@ -94,7 +94,7 @@ async def orm_get_info_pages(session):
     result = await session.execute(query)
     return result.scalars().all()
 
-async def orm_get_categories(session):
+async def orm_get_categories(session: AsyncSession):
     query = select(Category)
     result = await session.execute(query)
     return result.scalars().all()

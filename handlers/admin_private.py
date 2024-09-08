@@ -18,6 +18,7 @@ admin_router.message.filter(ChatTypeFilter(["private"]), IsAdmin())
 ADMIN_KB = get_keyboard(
     "Добавить товар",
     "Ассортимент",
+    "Добавить/Изменить баннер",
     placeholder="Выберите действие",
     sizes=(2,),
 )
