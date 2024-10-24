@@ -124,7 +124,7 @@ async def orm_add_to_cart(session, user_id, product_id):
         await session.commit()
         return cart
     else:
-        session.add(Cart(user_id=user_id, product_id=product_id))
+        session.add(Cart(user_id=user_id, product_id=product_id, quantity=1))
         await session.commit()
 
 async def orm_get_user_carts(session, user_id):
