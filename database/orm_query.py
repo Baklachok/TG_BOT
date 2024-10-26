@@ -1,38 +1,9 @@
-import math
-
 from sqlalchemy import select, update, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload
 
 from database.models import Product, Banner, Category, User, Cart
 
-
-class Paginator:
-    def __init__(self, array, page=1, per_page=1):
-        self.array = array
-        self.page = page
-        self.per_page = per_page
-        self.len = len(self.array)
-        self.pages = math.ceil(self.len / self.per_page)
-
-    def __get_slice(self):
-        start = (self.page - 1) * self.per_page
-        stop = start + self.per_page
-        return self.array[start:stop]
-
-    def get_page(self):
-        page_items = self.__get_slice()
-        return page_items
-
-    def has_next(self):
-        if self.page < self.pages:
-            return self.page + 1
-        return False
-
-    def has_previous(self):
-        if self.page > 1:
-            return self.page - 1
-        return False
 
 async def orm_add_product(session, data):
     obj = Product(
@@ -138,7 +109,7 @@ async def orm_delete_from_cart(session, user_id, product_id):
     await session.commit()
 
 async def orm_reduce_product_in_cart(session, user_id, product_id):
-    query = select(Cart).where(Cart.user_id == user_id, Cart.product_id == product_id).options(joinedload(Cart.product))
+    query = select(Cart).where(Cart.user_id == user_id, Cart.product_id == product_id)
     cart = await session.execute(query)
     cart = cart.scalar()
 

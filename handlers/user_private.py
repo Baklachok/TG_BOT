@@ -1,11 +1,11 @@
-from aiogram import F, types, Router
+from aiogram import types, Router
 from aiogram.filters import CommandStart
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from database.orm_query import orm_add_user, orm_add_to_cart
 from filters.chat_types import ChatTypeFilter
 from handlers.menu_processing import get_menu_content
-from kbrd.inline import get_callback_btns, MenuCallBack
+from kbrd.inline import MenuCallBack
 
 user_private_router = Router()
 user_private_router.message.filter(ChatTypeFilter(["private"]))
@@ -38,6 +38,8 @@ async def user_menu(callback: types.CallbackQuery, callback_data: MenuCallBack, 
         menu_name=callback_data.menu_name,
         category=callback_data.category,
         page=callback_data.page,
+        product_id=callback_data.product_id,
+        user_id=callback.from_user.id,
     )
 
     await callback.message.edit_media(media=media, reply_markup=reply_markup)
